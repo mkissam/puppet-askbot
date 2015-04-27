@@ -1,71 +1,71 @@
-# Class: askbot
+# == Class: askbot
+# This class sets up an askbot site
 #
-# This class installs Askbot and main dependencies, like
-# postgresql or mysql driver, and other django libraries.
-# (django-redis-cache, django-haystack, pysolr, stopforumspam)
+# == Parameters
 #
-# Parameters:
-#   - $db_provider: database provider (mysql | pgsql)
-#   - $askbot_version: pip package version of askbot
-#   - $redis_enabled: set to true if askbot using redis for cache
-#
-# Actions:
-#   - Install Askbot
-#   - Install Askbot dependencies
-#
+# == Actions
 class askbot (
-  $db_provider = 'mysql',
-  $askbot_version = '0.7.50',
-  $redis_enabled = false,
-) {
-  include apache::mod::wsgi
+  $dist_root       = $::askbot::params::dist_root,
+  $site_root       = $::askbot::params::site_root,
+  $askbot_revision = $::askbot::params::askbot_revision,
+  $askbot_repo     = $::askbot::params::askbot_repo,
+  $www_group       = $::askbot::params::www_group,
+  $www_user        = $::askbot::params::www_user,
+  $db_provider     = $::askbot::params::db_provider,
+  $db_name         = $::askbot::params::db_name,
+  $db_user         = $::askbot::params::db_user,
+  $db_password     = $::askbot::params::db_password,
+  $db_host         = $::askbot::params::db_host,
+  $redis_enabled = $::askbot::params::redis_enabled,
+  $redis_prefix = $::askbot::params::redis_prefix,
+  $redis_port = $::askbot::params::redis_port,
+  $redis_max_memory = $::askbot::params::redis_max_memory,
+  $redis_bind = $::askbot::params::redis_bind,
+  $redis_password = $::askbot::params::redis_password,
+  $site_name = undef,
+  $custom_theme_enabled = $::askbot::params::custom_theme_enabled,
+  $custom_theme_name = $::askbot::params::custom_theme_name,
+) inherits askbot::params {
 
-  case $db_provider {
-    'mysql': {
-      $package_deps = [ 'python-pip', 'python-dev', 'python-mysqldb' ]
+  class { 'askbot::install':
+    redis_enabled        => $redis_enabled,
+  }
+
+  if !defined(File[$dist_root]) {
+    file { $dist_root:
+      ensure => directory,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0755',
     }
-    'pgsql': {
-      $package_deps = [ 'python-pip', 'python-dev', 'python-psycopg2' ]
-    }
-    default: {
-      fail("Unsupported database provider: ${db_provider}")
-    }
   }
 
-  package { $package_deps:
-    ensure => present,
+  vcsrepo { "${dist_root}/askbot":
+    ensure   => latest,
+    provider => git,
+    revision => $askbot_revision,
+    source   => $askbot_repo,
+    require  => [ File[$dist_root], Package['git'] ],
   }
 
-  if $redis_enabled {
-    package { 'django-redis-cache':
-      ensure   => present,
-      provider => 'pip',
-      before   => Package['askbot'],
-    }
-  }
-
-  package { [ 'django-haystack', 'pysolr' ]:
-    ensure   => present,
-    provider => 'pip',
-    before   => Package['askbot'],
-  }
-
-  package { 'stopforumspam':
-    ensure   => present,
-    provider => 'pip',
-    before   => Package['askbot'],
-  }
-
-  package { 'askbot':
-    ensure   => $askbot_version,
-    provider => 'pip',
-    require  => Package[$package_deps],
-  }
-
-  file { '/srv/askbot-sites':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
+  class { 'askbot::config':
+    site_root            => $site_root,
+    dist_root            => $dist_root,
+    www_group            => $www_group,
+    db_provider          => $db_provider,
+    db_name              => $db_name,
+    db_user              => $db_user,
+    db_password          => $db_password,
+    db_host              => $db_host,
+    redis_enabled        => $redis_enabled,
+    redis_prefix         => $redis_prefix,
+    redis_port           => $redis_port,
+    redis_max_memory     => $redis_max_memory,
+    redis_bind           => $redis_bind,
+    redis_password       => $redis_password,
+    site_name            => $site_name,
+    custom_theme_enabled => $custom_theme_enabled,
+    custom_theme_name    => $custom_theme_name,
+    require              => [ Vcsrepo["${dist_root}/askbot"], Class['askbot::install'] ],
   }
 }

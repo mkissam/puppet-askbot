@@ -34,8 +34,8 @@ DATABASES = {
 }
 
 #outgoing mail server settings
-SERVER_EMAIL = 'openstack@ask.openstack.org'
-DEFAULT_FROM_EMAIL = 'openstack@ask.openstack.org'
+SERVER_EMAIL = 'noreply@openstack.org'
+DEFAULT_FROM_EMAIL = 'noreply@openstack.org'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_SUBJECT_PREFIX = ''
@@ -79,7 +79,7 @@ LANGUAGE_CODE = 'en'
 # Absolute path to the directory that holds uploaded media
 # Example: "/home/media/media.lawrence.com/"
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'askbot', 'upfiles')
-MEDIA_ROOT = '/srv/askbot-sites/<%= @slot_name%>/upfiles'
+MEDIA_ROOT = '/srv/askbot-sites/upfiles'
 MEDIA_URL = '/upfiles/'
 STATIC_URL = '/m/'#this must be different from MEDIA_URL
 
@@ -151,7 +151,7 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 #take a look here http://askbot.org/en/question/207/
 
 <% if @custom_theme_enabled %>
-ASKBOT_EXTRA_SKINS_DIR = '<%= @askbot_site_root %>/themes'
+ASKBOT_EXTRA_SKINS_DIR = '<%= @site_root %>/themes'
 <% end %>
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -161,6 +161,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'askbot.user_messages.context_processors.user_messages',#must be before auth
     'django.contrib.auth.context_processors.auth', #this is required for the admin app
     'django.core.context_processors.csrf', #necessary for csrf protection
+    'askbot.deps.group_messaging.context.group_messaging_context', 
 )
 
 
@@ -178,8 +179,10 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.messages',
     #'debug_toolbar',
+<% if solr_enabled %> 
     #Optional, to enable haystack search
     'haystack',
+<% end %>
     'compressor',
     'askbot',
     'askbot.deps.django_authopenid',
@@ -234,7 +237,7 @@ AUTHENTICATION_BACKENDS = (
 #logging settings
 LOG_FILENAME = 'askbot.log'
 logging.basicConfig(
-    filename=os.path.join('<%= @askbot_site_root %>/log', LOG_FILENAME),
+    filename=os.path.join('<%= @site_root %>/log', LOG_FILENAME),
     level=logging.CRITICAL,
     format='%(pathname)s TIME: %(asctime)s MSG: %(filename)s:%(funcName)s:%(lineno)d %(message)s',
 )
@@ -268,10 +271,10 @@ CSRF_COOKIE_NAME = '_csrf'
 #CSRF_COOKIE_DOMAIN = DOMAIN_NAME
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
-STATIC_ROOT = '<%= @askbot_site_root %>/static'
+STATIC_ROOT = '<%= @site_root %>/static'
 STATICFILES_DIRS = (
     ('default/media', os.path.join(ASKBOT_ROOT, 'media')),
-    <% if @custom_theme_enabled %>'<%= @askbot_site_root %>/themes',<% end %>
+    <% if @custom_theme_enabled %>'<%= @site_root %>/themes',<% end %>
 )
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -294,6 +297,7 @@ ENABLE_HAYSTACK_SEARCH = False
 #            }
 #}
 
+<% if solr_enabled %> 
 #HAYSTACK_SETTINGS
 ENABLE_HAYSTACK_SEARCH = True
 
@@ -315,7 +319,7 @@ HAYSTACK_CONNECTIONS = {
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'askbot.search.haystack.signals.AskbotRealtimeSignalProcessor'
-
+<% end %>
 
 
 TINYMCE_COMPRESSOR = True
@@ -346,13 +350,14 @@ TINYMCE_DEFAULT_CONFIG = {
     'height': '250'
 }
 
-<%if  @custom_theme_name %>
 LIVESETTINGS_OPTIONS = {
     1: {
         'DB': True,
         'SETTINGS': {
             'GENERAL_SKIN_SETTINGS': {
+                <% if @custom_theme_enabled %>
                 'ASKBOT_DEFAULT_SKIN': '<%= @custom_theme_name %>',
+                <%end%>
                 'SHOW_LOGO': True
             },
             'LOGIN_PROVIDERS': {
@@ -373,12 +378,11 @@ LIVESETTINGS_OPTIONS = {
                 'SIGNIN_FLICKR_ENABLED': False,
                 'SIGNIN_FACEBOOK_ENABLED': False,
                 'SIGNIN_LAUNCHPAD_ENABLED': True,
-                'SIGNIN_OPENID_ENABLED':  False
+                'SIGNIN_OPENID_ENABLED': True
             }
         },
     }
 }
-<%end%>
 
 #delayed notifications, time in seconds, 15 mins by default
 NOTIFICATION_DELAY_TIME = 60 * 15
