@@ -28,7 +28,11 @@ class askbot (
 ) inherits askbot::params {
 
   class { 'askbot::install':
-    redis_enabled        => $redis_enabled,
+    db_provider     => $db_provider,
+    dist_root       => $dist_root,
+    askbot_repo     => $askbot_repo,
+    askbot_revision => $askbot_revision,
+    redis_enabled   => $redis_enabled,
   }
 
   if !defined(File[$dist_root]) {
