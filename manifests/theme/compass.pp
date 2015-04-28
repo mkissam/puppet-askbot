@@ -10,18 +10,25 @@
 #
 define askbot::theme::compass(
 ) {
-  # add ruby, bundler packages if not defined somewhere else
-  if ! defined(Package['rubygems']) {
-    package { 'rubygems':
-      ensure => present,
+  if $::operatingsystem == 'Ubuntu' and $::lsbdistrelease == '12.04' {
+    # add ruby, bundler packages if not defined somewhere else
+    if ! defined(Package['rubygems']) {
+      package { 'rubygems':
+        ensure => present,
+      }
     }
-  }
 
-  if ! defined(Package['bundler']) {
+    if ! defined(Package['bundler']) {
+      package { 'bundler':
+        ensure   => latest,
+        provider => gem,
+        require  => Package['rubygems'],
+      }
+    }
+  } else {
+    # add bundler as a debian package
     package { 'bundler':
       ensure   => latest,
-      provider => gem,
-      require  => Package['rubygems'],
     }
   }
 
