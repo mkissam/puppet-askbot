@@ -9,7 +9,7 @@
 #
 define askbot::site::setup_template (
   $template_path = undef,
-  $dest_dir = undef,
+  $dest_dir      = undef,
 ) {
   file { "${dest_dir}/${name}":
     ensure  => present,
