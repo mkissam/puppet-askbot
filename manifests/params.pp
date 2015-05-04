@@ -34,6 +34,15 @@ class askbot::params {
   $www_user        = 'www-data'
   $www_group       = 'www-data'
 
+  # ssl configuration
+  $site_ssl_enabled             = false
+  $site_ssl_cert_file_contents  = undef
+  $site_ssl_key_file_contents   = undef
+  $site_ssl_chain_file_contents = undef
+  $site_ssl_cert_file           = ''
+  $site_ssl_key_file            = ''
+  $site_ssl_chain_file          = ''
+
   # custom theme
   $custom_theme_enabled = false
   $custom_theme_name    = undef
