@@ -63,6 +63,10 @@ class askbot::config (
     site_name => $site_name,
   }
 
+  class { 'askbot::site::celeryd':
+    site_root => $site_root,
+  }
+
   class { 'askbot::site::config':
     site_root            => $site_root,
     db_provider          => $db_provider,
