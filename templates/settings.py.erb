@@ -179,7 +179,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.messages',
     #'debug_toolbar',
-<% if solr_enabled %> 
+<% if @solr_enabled %>
     #Optional, to enable haystack search
     'haystack',
 <% end %>
@@ -297,7 +297,7 @@ ENABLE_HAYSTACK_SEARCH = False
 #            }
 #}
 
-<% if solr_enabled %> 
+<% if @solr_enabled %>
 #HAYSTACK_SETTINGS
 ENABLE_HAYSTACK_SEARCH = True
 

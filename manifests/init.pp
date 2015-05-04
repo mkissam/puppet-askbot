@@ -16,6 +16,7 @@ class askbot (
   $db_user         = $::askbot::params::db_user,
   $db_password     = $::askbot::params::db_password,
   $db_host         = $::askbot::params::db_host,
+  $askbot_debug    = $::askbot::params::askbot_debug,
   $redis_enabled = $::askbot::params::redis_enabled,
   $redis_prefix = $::askbot::params::redis_prefix,
   $redis_port = $::askbot::params::redis_port,
@@ -25,6 +26,7 @@ class askbot (
   $site_name = undef,
   $custom_theme_enabled = $::askbot::params::custom_theme_enabled,
   $custom_theme_name = $::askbot::params::custom_theme_name,
+  $solr_enabled    = $::askbot::params::solr_enabled,
 ) inherits askbot::params {
 
   class { 'askbot::install':
@@ -33,6 +35,7 @@ class askbot (
     askbot_repo     => $askbot_repo,
     askbot_revision => $askbot_revision,
     redis_enabled   => $redis_enabled,
+    solr_enabled    => $solr_enabled,
   }
 
   if !defined(File[$dist_root]) {
@@ -61,6 +64,7 @@ class askbot (
     db_user              => $db_user,
     db_password          => $db_password,
     db_host              => $db_host,
+    askbot_debug         => $askbot_debug,
     redis_enabled        => $redis_enabled,
     redis_prefix         => $redis_prefix,
     redis_port           => $redis_port,
@@ -70,6 +74,7 @@ class askbot (
     site_name            => $site_name,
     custom_theme_enabled => $custom_theme_enabled,
     custom_theme_name    => $custom_theme_name,
+    solr_enabled         => $solr_enabled,
     require              => [ Vcsrepo["${dist_root}/askbot"], Class['askbot::install'] ],
   }
 }

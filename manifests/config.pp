@@ -13,6 +13,7 @@ class askbot::config (
   $db_user                      = $::askbot::params::db_user,
   $db_password                  = $::askbot::params::db_password,
   $db_host                      = $::askbot::params::db_host,
+  $askbot_debug                 = $::askbot::params::askbot_debug,
   $redis_enabled                = $::askbot::params::redis_enabled,
   $redis_prefix                 = $::askbot::params::redis_prefix,
   $redis_port                   = $::askbot::params::redis_port,
@@ -29,6 +30,7 @@ class askbot::config (
   $site_name                    = undef,
   $custom_theme_enabled         = $::askbot::params::custom_theme_enabled,
   $custom_theme_name            = $::askbot::params::custom_theme_name,
+  $solr_enabled                 = $::askbot::params::solr_enabled,
 ) {
   file { $site_root:
     ensure  => directory,
@@ -68,6 +70,7 @@ class askbot::config (
     db_user              => $db_user,
     db_password          => $db_password,
     db_host              => $db_host,
+    askbot_debug         => $askbot_debug,
     redis_enabled        => $redis_enabled,
     redis_prefix         => $redis_prefix,
     redis_port           => $redis_port,
@@ -76,6 +79,7 @@ class askbot::config (
     redis_password       => $redis_password,
     custom_theme_enabled => $custom_theme_enabled,
     custom_theme_name    => $custom_theme_name,
+    solr_enabled         => $solr_enabled,
   }
 
   class { 'askbot::site::static':

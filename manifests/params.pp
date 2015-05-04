@@ -17,6 +17,8 @@ class askbot::params {
   $askbot_repo     = 'https://github.com/ASKBOT/askbot-devel.git'
   $askbot_revision = 'master'
 
+  $askbot_debug    = false
+
   # database settings
   $db_provider     = 'mysql'
   $db_name         = undef

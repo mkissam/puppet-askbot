@@ -8,7 +8,7 @@ class askbot::site::config (
   $db_user              = $::askbot::params::db_user,
   $db_password          = $::askbot::params::db_password,
   $db_host              = $::askbot::params::db_host,
-  $askbot_debug         = false,
+  $askbot_debug         = $::askbot::params::askbot_debug,
   $smtp_host            = 'localhost',
   $smtp_port            = '25',
   $redis_enabled        = $::askbot::params::redis_enabled,

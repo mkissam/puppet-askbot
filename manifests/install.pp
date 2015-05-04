@@ -6,6 +6,7 @@ class askbot::install (
   $askbot_repo     = $::askbot::params::askbot_repo,
   $askbot_revision = $::askbot::params::askbot_revision,
   $redis_enabled   = $::askbot::params::redis_enabled,
+  $solr_enabled    = $::askbot::params::solr_enabled,
 ) {
 
   if !defined(Package['git']) {
@@ -52,8 +53,12 @@ class askbot::install (
 
   include apache::mod::wsgi
 
-  # TODO: add python packages:
-  #   - solr:  django-haystack, pysolr
+  if $solr_enabled {
+    package { [ 'django-haystack', 'pysolr' ]:
+      ensure   => present,
+      provider => 'pip',
+    }
+  }
 
   # Notice: we are not using a pre-packaged askbot, so it is mandatory
   # to install pip dependencies, and execute setup.py install when
