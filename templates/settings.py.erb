@@ -299,6 +299,11 @@ ENABLE_HAYSTACK_SEARCH = False
 
 <% if @solr_enabled %>
 #HAYSTACK_SETTINGS
+#
+# Notice:
+#  the default and default_en url must match to avoid a bug
+#  in r0.7.53 that broke the working model of UI search and
+#  cli indexing.
 ENABLE_HAYSTACK_SEARCH = True
 
 HAYSTACK_ROUTERS = ['askbot.search.haystack.routers.LanguageRouter',]
@@ -306,7 +311,7 @@ HAYSTACK_ROUTERS = ['askbot.search.haystack.routers.LanguageRouter',]
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr'
+        'URL': 'http://127.0.0.1:8983/solr/core-en'
     },
     'default_en': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
