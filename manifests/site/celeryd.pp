@@ -9,7 +9,7 @@ class askbot::site::celeryd (
     group   => 'root',
     mode    => '0644',
     content => template('askbot/celeryd.upstart.conf.erb'),
-    require => Exec["askbot-migrate"],
+    require => Exec['askbot-migrate'],
   }
 
   service { 'askbot-celeryd':

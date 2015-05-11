@@ -34,7 +34,7 @@ define askbot::theme::compass(
 
   # install bundle requirements in Gemfiles, compile Sass
   exec { "theme-bundle-install-${name}":
-    cwd         => "/srv/askbot-site/themes",
+    cwd         => '/srv/askbot-site/themes',
     path        => ['/bin', '/usr/bin', '/sbin', '/usr/sbin', '/usr/local/bin'],
     logoutput   => on_failure,
     command     => 'bundle install',
@@ -43,7 +43,7 @@ define askbot::theme::compass(
   }
 
   exec { "theme-bundle-compile-${name}":
-    cwd         => "/srv/askbot-site/themes",
+    cwd         => '/srv/askbot-site/themes',
     path        => ['/bin', '/usr/bin', '/sbin', '/usr/sbin', '/usr/local/bin'],
     logoutput   => on_failure,
     command     => 'bundle exec compass compile',

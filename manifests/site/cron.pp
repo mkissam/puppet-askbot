@@ -30,8 +30,8 @@ class askbot::site::cron (
   }
 
   # 0 3 * * *
-  cron { "askbot-send-email-alerts":
-    name    => "askbot-send-mail-alerts.cron",
+  cron { 'askbot-send-email-alerts':
+    name    => 'askbot-send-mail-alerts.cron',
     command => "/bin/bash ${site_root}/cron/send_email_alerts.sh",
     user    => root,
     minute  => '0',
@@ -42,8 +42,8 @@ class askbot::site::cron (
   }
 
   # 10 * * * *
-  cron { "askbot-clean-session":
-    name    => "askbot-clean-session.cron",
+  cron { 'askbot-clean-session':
+    name    => 'askbot-clean-session.cron',
     command => "/bin/bash ${site_root}/cron/clean_session.sh",
     user    => root,
     minute  => '10',

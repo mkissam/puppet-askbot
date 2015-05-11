@@ -60,11 +60,6 @@ class askbot::install (
     }
   }
 
-  # Notice: we are not using a pre-packaged askbot, so it is mandatory
-  # to install pip dependencies, and execute setup.py install when
-  # local askbot repo have been refreshed.
-
-  # TODO: include stopforumspan in requirements.txt ?
   package { 'stopforumspam':
     ensure   => present,
     provider => 'pip',
