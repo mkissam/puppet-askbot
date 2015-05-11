@@ -17,6 +17,7 @@ class askbot::params {
   $askbot_repo     = 'https://github.com/ASKBOT/askbot-devel.git'
   $askbot_revision = 'master'
 
+  # debug settings
   $askbot_debug    = false
 
   # database settings
@@ -25,6 +26,10 @@ class askbot::params {
   $db_user         = undef
   $db_password     = undef
   $db_host         = 'localhost'
+
+  # smtp settings
+  smtp_host        = 'localhost'
+  smtp_port        = '25'
 
   # directories
   $dist_root       = '/srv/dist'
